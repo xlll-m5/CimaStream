@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-const API_URL = 'https://cimastream.onrender.com/api';
-    // --- 1. إعداد الهيدر الذكي ---
+    // --- 1. تم تصحيح الروابط هنا ---
+    // هذا هو رابط الخادم (الباكاند) الذي أرسلته
+    const API_URL = 'https://cimastream.onrender.com/api';
+    
+    // (هذا هو الرابط الأساسي للصور والفيديو، بدون /api)
+    const BASE_URL = 'https://cimastream.onrender.com';
+
+
+    // --- 2. إعداد الهيدر الذكي (الكود سليم) ---
     const setupDynamicHeader = () => {
         const authButtonsDiv = document.querySelector('.auth-buttons');
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -54,13 +61,13 @@ const API_URL = 'https://cimastream.onrender.com/api';
         }
     });
 
-    // --- 2. باقي الكود ---
+    // --- 3. باقي الكود (سليم لأنه يستخدم API_URL) ---
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const moviesGrid = document.getElementById('moviesGrid');
     
     
-    // --- التعامل مع صفحة تسجيل الدخول (الكود الصحيح) ---
+    // --- التعامل مع صفحة تسجيل الدخول ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -68,6 +75,7 @@ const API_URL = 'https://cimastream.onrender.com/api';
             const password = document.getElementById('password').value;
             
             try {
+                // هذا الكود سليم (يستخدم API_URL)
                 const res = await fetch(`${API_URL}/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -99,7 +107,6 @@ const API_URL = 'https://cimastream.onrender.com/api';
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -109,14 +116,12 @@ const API_URL = 'https://cimastream.onrender.com/api';
                 alert('كلمتا المرور غير متطابقتين!');
                 return;
             }
-
             try {
                 const res = await fetch(`${API_URL}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, email, password })
                 });
-
                 if (res.ok) {
                     alert('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
                     window.location.href = 'login.html';
@@ -134,7 +139,7 @@ const API_URL = 'https://cimastream.onrender.com/api';
     if (moviesGrid) {
         const fetchMovies = async () => {
             try {
-                const res = await fetch(`${API_URL}/movies`);
+                const res = await fetch(`${API_URL}/movies`); // سليم
                 if (!res.ok) throw new Error('فشل جلب الأفلام');
                 const movies = await res.json();
                 renderMovies(movies);
@@ -149,8 +154,9 @@ const API_URL = 'https://cimastream.onrender.com/api';
                  return;
             }
             movies.forEach(movie => {
-                const posterUrl = `http://localhost:5000/${movie.posterPath.replace(/\\/g, '/')}`;
-                // هذا الكود الخاص بالصفحة الرئيسية (مع التقييم والتصنيف)
+                // --- 4. تم تصحيح رابط الصورة هنا (يستخدم BASE_URL) ---
+                const posterUrl = `${BASE_URL}/${movie.posterPath.replace(/\\/g, '/')}`;
+                
                 const movieCard = `
                     <a href="movie-detail.html?id=${movie._id}" class="movie-card">
                         <img src="${posterUrl}" alt="${movie.title}">
@@ -167,7 +173,7 @@ const API_URL = 'https://cimastream.onrender.com/api';
         fetchMovies();
     }
 
-    // --- دالة لإدارة قوائم المستخدم (المفضلة والمشاهدة لاحقاً) ---
+    // --- دالة لإدارة قوائم المستخدم (سليمة) ---
     async function toggleUserList(listType, movieId, buttonElement) {
         const token = localStorage.getItem('userToken');
         if (!token) {
@@ -175,31 +181,25 @@ const API_URL = 'https://cimastream.onrender.com/api';
             window.location.href = 'login.html';
             return;
         }
-
         try {
             const res = await fetch(`${API_URL}/user/${listType}/${movieId}`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-
             const data = await res.json();
-            alert(data.message); // إظهار رسالة "تمت الإضافة"
-            
+            alert(data.message);
             if (data.added) {
                 buttonElement.classList.add('active');
             } else {
                 buttonElement.classList.remove('active');
             }
-
         } catch (err) {
             alert('حدث خطأ في الخادم');
         }
     }
 
 
-    // --- جلب وعرض تفاصيل الفيلم (الكود المدمج والصحيح) ---
+    // --- جلب وعرض تفاصيل الفيلم ---
     const movieDetailContainer = document.getElementById('movieDetailContainer');
     
     if (movieDetailContainer) {
@@ -211,7 +211,7 @@ const API_URL = 'https://cimastream.onrender.com/api';
 
         const fetchMovieData = async (id) => {
             try {
-                const res = await fetch(`${API_URL}/movies/find/${id}`);
+                const res = await fetch(`${API_URL}/movies/find/${id}`); // سليم
                 if (!res.ok) throw new Error('فشل جلب بيانات الفيلم');
                 const movie = await res.json();
                 renderMovieDetail(movie);
@@ -220,10 +220,10 @@ const API_URL = 'https://cimastream.onrender.com/api';
             }
         };
 
-        // هذه هي الدالة المحدثة والكاملة
         const renderMovieDetail = (movie) => {
-            const posterUrl = `http://localhost:5000/${movie.posterPath.replace(/\\/g, '/')}`;
-            const videoUrl = `http://localhost:5000/${movie.moviePath.replace(/\\/g, '/')}`;
+            // --- 5. تم تصحيح روابط الصورة والفيديو هنا (تستخدم BASE_URL) ---
+            const posterUrl = `${BASE_URL}/${movie.posterPath.replace(/\\/g, '/')}`;
+            const videoUrl = `${BASE_URL}/${movie.moviePath.replace(/\\/g, '/')}`;
             document.title = `${movie.title} - CimaStream`;
             
             const html = `
@@ -260,7 +260,6 @@ const API_URL = 'https://cimastream.onrender.com/api';
             
             movieDetailContainer.innerHTML = html;
 
-            // إضافة المستمعين للأزرار الجديدة
             document.getElementById('favoriteBtn').addEventListener('click', (e) => {
                 toggleUserList('favorites', movie._id, e.currentTarget);
             });
@@ -278,4 +277,3 @@ const API_URL = 'https://cimastream.onrender.com/api';
     }
 
 });
-
