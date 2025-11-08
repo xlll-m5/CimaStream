@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const adminForm = document.getElementById('adminMovieForm');
-const API_URL = 'https://cimastream.onrender.com/api';
+    
+    // --- 1. تم تصحيح الرابط هنا ---
+    const API_URL = 'https://cimastream.onrender.com/api';
 
     if (adminForm) {
         adminForm.addEventListener('submit', async (e) => {
@@ -8,9 +10,9 @@ const API_URL = 'https://cimastream.onrender.com/api';
 
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = 'جاري رفع الفيلم...';
-            messageDiv.style.color = 'white';
+            messageDiv.style.color = 'white'; 
 
-            // --- 1. جلب كل البيانات من الحقول ---
+            // --- 2. جلب كل البيانات من الحقول ---
             const title = document.getElementById('title').value;
             const description = document.getElementById('description').value;
             const poster = document.getElementById('poster').files[0];
@@ -21,7 +23,7 @@ const API_URL = 'https://cimastream.onrender.com/api';
             const rating = document.getElementById('rating').value;
             const classification = document.getElementById('classification').value;
 
-            // --- 2. بناء FormData (هنا تم التصحيح) ---
+            // --- 3. بناء FormData ---
             const formData = new FormData();
             formData.append('title', title);
             formData.append('description', description);
@@ -33,8 +35,7 @@ const API_URL = 'https://cimastream.onrender.com/api';
             formData.append('rating', rating);
             formData.append('classification', classification);
 
-            // --- 3. جلب التوكن الخاص بالإداري (هام جداً) ---
-            // بما أننا حفظنا التوكن عند تسجيل الدخول، يمكننا استخدامه
+            // --- 4. جلب التوكن الخاص بالإداري ---
             const token = localStorage.getItem('userToken');
 
             if (!token) {
@@ -43,13 +44,13 @@ const API_URL = 'https://cimastream.onrender.com/api';
                  return;
             }
             
-            // --- 4. إرسال البيانات للخادم ---
+            // --- 5. إرسال البيانات للخادم (باستخدام الرابط الصحيح) ---
             try {
+                // --- 6. تم تصحيح الرابط هنا ---
                 const response = await fetch(`${API_URL}/movies/add`, {
-                        method: 'POST',
+                    method: 'POST',
                     body: formData,
                     headers: {
-                        // يجب إرسال التوكن ليسمح لك الخادم بالإضافة
                         'Authorization': `Bearer ${token}` 
                     }
                 });
@@ -72,4 +73,3 @@ const API_URL = 'https://cimastream.onrender.com/api';
         });
     }
 });
-
