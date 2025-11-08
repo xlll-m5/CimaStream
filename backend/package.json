@@ -1,7 +1,7 @@
 {
-  "name": "cimastream-backend",
+  "name": "cimaExtreme-backend",
   "version": "1.0.0",
-  "description": "Back-end for CimaStream movie website",
+  "description": "Back-end for cimaExtreme movie website",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
