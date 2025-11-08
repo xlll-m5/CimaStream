@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const adminForm = document.getElementById('adminMovieForm');
+const API_URL = 'https://cimastream-api.onrender.com/api';
 
     if (adminForm) {
         adminForm.addEventListener('submit', async (e) => {
@@ -44,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // --- 4. إرسال البيانات للخادم ---
             try {
-                const response = await fetch('http://localhost:5000/api/movies/add', {
-                    method: 'POST',
+                const response = await fetch(`${API_URL}/movies/add`, {
+                        method: 'POST',
                     body: formData,
                     headers: {
                         // يجب إرسال التوكن ليسمح لك الخادم بالإضافة
