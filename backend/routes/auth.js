@@ -3,7 +3,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'CimaExtremeSecretKey2026';
 
 // --- مسار إنشاء حساب ---
 router.post('/register', async (req, res) => {
@@ -58,5 +58,6 @@ router.post('/login', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
 
 module.exports = router;
