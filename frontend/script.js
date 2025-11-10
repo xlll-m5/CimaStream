@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. تم تصحيح الروابط هنا ---
-    // هذا هو رابط الخادم (الباكاند) الذي أرسلته
+    // --- 1. الرابط الصحيح للـ API ---
+    // (يشير إلى الواجهة الخلفية "api")
     const API_URL = 'https://cimastream.onrender.com/api';
     
-    // (هذا هو الرابط الأساسي للصور والفيديو، بدون /api)
-    const BASE_URL = 'https://cimastream.onrender.com';
+    // --- (لم نعد بحاجة إلى BASE_URL لأن الروابط تأتي كاملة من Cloudinary) ---
 
 
     // --- 2. إعداد الهيدر الذكي (الكود سليم) ---
@@ -75,20 +74,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('password').value;
             
             try {
-                // هذا الكود سليم (يستخدم API_URL)
                 const res = await fetch(`${API_URL}/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ loginIdentifier, password })
                 });
-
                 const data = await res.json();
-
                 if (res.ok) {
                     alert('تم تسجيل الدخول بنجاح!');
                     localStorage.setItem('userToken', data.accessToken);
                     localStorage.setItem('userInfo', JSON.stringify(data));
-                    
                     if (data.isAdmin) {
                         window.location.href = 'admin.html';
                     } else {
@@ -139,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (moviesGrid) {
         const fetchMovies = async () => {
             try {
-                const res = await fetch(`${API_URL}/movies`); // سليم
+                const res = await fetch(`${API_URL}/movies`); 
                 if (!res.ok) throw new Error('فشل جلب الأفلام');
                 const movies = await res.json();
                 renderMovies(movies);
@@ -154,8 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
                  return;
             }
             movies.forEach(movie => {
-                // --- 4. تم تصحيح رابط الصورة هنا (يستخدم BASE_URL) ---
-                const posterUrl = `${BASE_URL}/${movie.posterPath.replace(/\\/g, '/')}`;
+                // --- 4. 💡 هذا هو التعديل! ---
+                // (نحن نستخدم الرابط الكامل من Cloudinary مباشرة)
+                const posterUrl = movie.posterPath;
                 
                 const movieCard = `
                     <a href="movie-detail.html?id=${movie._id}" class="movie-card">
@@ -173,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchMovies();
     }
 
-    // --- دالة لإدارة قوائم المستخدم (سليمة) ---
+    // --- دالة لإدارة قوائم المستخدم (المفضلة والمشاهدة لاحقاً) ---
     async function toggleUserList(listType, movieId, buttonElement) {
         const token = localStorage.getItem('userToken');
         if (!token) {
@@ -199,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- جلب وعرض تفاصيل الفيلم ---
+    // --- جلب وعرض تفاصيل الفيلم (الكود المدمج والصحيح) ---
     const movieDetailContainer = document.getElementById('movieDetailContainer');
     
     if (movieDetailContainer) {
@@ -211,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fetchMovieData = async (id) => {
             try {
-                const res = await fetch(`${API_URL}/movies/find/${id}`); // سليم
+                const res = await fetch(`${API_URL}/movies/find/${id}`); 
                 if (!res.ok) throw new Error('فشل جلب بيانات الفيلم');
                 const movie = await res.json();
                 renderMovieDetail(movie);
@@ -221,9 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const renderMovieDetail = (movie) => {
-            // --- 5. تم تصحيح روابط الصورة والفيديو هنا (تستخدم BASE_URL) ---
-            const posterUrl = `${BASE_URL}/${movie.posterPath.replace(/\\/g, '/')}`;
-            const videoUrl = `${BASE_URL}/${movie.moviePath.replace(/\\/g, '/')}`;
+            // --- 5. 💡 هذا هو التعديل الثاني! ---
+            // (نستخدم الروابط الكاملة من Cloudinary مباشرة)
+            const posterUrl = movie.posterPath;
+            const videoUrl = movie.moviePath;
             document.title = `${movie.title} - CimaStream`;
             
             const html = `
