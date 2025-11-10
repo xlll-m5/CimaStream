@@ -7,7 +7,7 @@ const verifyToken = (req, res, next) => {
     if (authHeader) {
         const token = authHeader.split(' ')[1]; // Bearer TOKEN
         
-        jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_key', (err, user) => {
+        jwt.verify(token, process.env.JWT_SECRET || 'CimaExtremeSecretKey2026', (err, user) => {
             if (err) {
                 return res.status(403).json('Token is not valid!');
             }
@@ -21,3 +21,4 @@ const verifyToken = (req, res, next) => {
 };
 
 module.exports = verifyToken;
+
